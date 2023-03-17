@@ -174,9 +174,7 @@ def caro_barato(df1, preco):
 st.header('Visão culinárias')
 
 
-# Comando pra trazer imagem
-image_path = 'foco.png'
-image = Image.open( image_path )
+image = Image.open( 'foco.png' )
 st.sidebar.image( image, width=120 )
 
 

@@ -178,8 +178,7 @@ def p_reservas(df1):
 st.header('Visão Paises')
 
 
-image_path = 'foco.png'
-image = Image.open( image_path )
+image = Image.open( 'foco.png' )
 st.sidebar.image( image, width=120 )
 
 
