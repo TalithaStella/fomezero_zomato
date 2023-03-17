@@ -19,7 +19,7 @@ st.set_page_config( layout='wide')
 #                    FUNÇÕES
 # ====================================================================================
 
-df = pd.read_csv('zomato.csv')
+
 
 # Colocando o nome dos países pelo código
 countries = {
@@ -120,12 +120,8 @@ df1 = clean_code(df)
 # Slidebar no streamlit - TUDO QUE ESTIVER DENTRO DA BARRA PRECISA TER O .sidebar
 # =================================================================== 
 
-st.header('FomeZero')
 
-
-# Comando pra trazer imagem
-image_path = 'foco.png'
-image = Image.open( image_path )
+image = Image.open( 'foco.png' )
 st.sidebar.image( image, width=120 )
 
 
@@ -161,6 +157,24 @@ df1 = df1.loc[country_sel, :]
 # ===================================================================
 
 
+with st.container():
+    col1, col2, col3, col4, col5, col6 = st.columns(6)
+    
+    with col1:
+        image = Image.open( 'foco.png' )
+        st.image( image, width=120 )
+        
+    with col2: 
+        st.header('FomeZero')
+        
+    with col3:
+        st.markdown(' ')
+    with col4:
+        st.markdown(' ')
+    with col5:
+        st.markdown(' ')    
+    with col6:
+        st.markdown(' ')    
 
 
 with st.container():
