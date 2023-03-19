@@ -167,6 +167,42 @@ def caro_barato(df1, preco):
     return grf_data
 
 
+
+def brasil(df1, asc):
+
+    br = df1.loc[(df1['Cuisines'] == 'Brazilian'),['Restaurant Name', 'Aggregate rating'] ].groupby('Restaurant Name').mean().sort_values('Aggregate rating', ascending=asc).reset_index().iloc[1, 0]
+
+    return br
+
+
+
+def rest_col(df1, col):
+
+    if col == 'indian':
+        culinaria = df1.loc[(df1['Cuisines'] == 'North Indian'),['Restaurant Name', 'Aggregate rating'] ].groupby('Restaurant Name').mean().sort_values('Aggregate rating', ascending=False).reset_index().iloc[1, 0]
+    else:
+        culinaria = df1.loc[(df1['Cuisines'] == 'Mineira'),['Restaurant Name', 'Aggregate rating'] ].groupby('Restaurant Name').mean().sort_values('Aggregate rating', ascending=True).reset_index().iloc[0, 0]
+    return culinaria
+
+
+
+def votos(df1, asc):
+    fig = df1.loc[:, ['Restaurant Name', 'Votes']].groupby('Restaurant Name').sum().sort_values('Votes', ascending=asc).reset_index().iloc[:10, :]
+    return fig
+
+
+
+def nota(df1, asc):
+
+    grf = df1.loc[:, ['Restaurant Name', 'Aggregate rating']].groupby('Restaurant Name').mean().sort_values('Aggregate rating', ascending=asc).reset_index().iloc[:10, :2]
+    return grf
+
+
+def preco(df1, asc):
+
+    grf = df1.loc[:, ['Restaurant Name', 'price_type', 'Price range']].groupby('Restaurant Name').max().sort_values('Price range', ascending=asc).reset_index().iloc[:10, :2]
+    return grf
+
 # ===================================================================
 #                    Slidebar no streamlit  
 # =================================================================== 
@@ -274,28 +310,36 @@ with tab2:
 
     with col1:
         st.markdown ('##### Melhor restaurante Brasileiro ')
-        melhor_br = df1.loc[(df1['Cuisines'] == 'Brazilian'),['Restaurant Name', 'Aggregate rating'] ].groupby('Restaurant Name').mean().sort_values('Aggregate rating', ascending=False).reset_index().iloc[1, 0]
-        col1.metric( '',melhor_br )
+        
+        br = brasil(df1, False)
+        col1.metric( '', br )
+
 
     with col2:
         st.markdown ('##### Pior restaurante Brasileiro ')
-        pior_br = df1.loc[(df1['Cuisines'] == 'Brazilian'),['Restaurant Name', 'Aggregate rating'] ].groupby('Restaurant Name').mean().sort_values('Aggregate rating', ascending=True).reset_index().iloc[1, 0]
-        col2.metric( '',pior_br )
+        br = brasil(df1, True)
+        col2.metric( '', br )
 
     st.markdown("""---""")
 
+    
     col1, col2 = st.columns(2)    
 
 
     with col1:
         st.markdown ('##### Restaurante da melhor culinária (north Indian)')
-        melhor_col = df1.loc[(df1['Cuisines'] == 'North Indian'),['Restaurant Name', 'Aggregate rating'] ].groupby('Restaurant Name').mean().sort_values('Aggregate rating', ascending=False).reset_index().iloc[1, 0]
-        col1.metric( '', melhor_col)
+      
+        culinaria = rest_col(df1, 'indian')
+        col1.metric( '', culinaria)
+        
+        
 
     with col2:
         st.markdown ('##### Restaurante da pior culinária (Mineira) ')
-        pior_col = df1.loc[(df1['Cuisines'] == 'Mineira'),['Restaurant Name', 'Aggregate rating'] ].groupby('Restaurant Name').mean().sort_values('Aggregate rating', ascending=True).reset_index().iloc[0, 0]
-        col2.metric( '', pior_col)
+        
+        culinaria = rest_col(df1, 'mineira')
+        col2.metric( '', culinaria)
+        
         
     st.markdown("""---""")
         
@@ -305,17 +349,17 @@ with tab2:
     
     with col1:
         st.subheader('Restaurantes com mais votos realizados')
-
-        grf1 = df1.loc[:, ['Restaurant Name', 'Votes']].groupby('Restaurant Name').sum().sort_values('Votes', ascending=False).reset_index().iloc[:10, :]
-        fig = px.bar(grf1, x='Restaurant Name', y='Votes')
-
+        
+        fig = votos(df1, False)
+        fig = px.bar(fig, x='Restaurant Name', y='Votes')
+        
         st.plotly_chart(fig, use_container_width=True)
         
     with col2:
         st.subheader('Restaurantes com menos votos realizados')
 
-        grf2 = df1.loc[:, ['Restaurant Name', 'Votes']].groupby('Restaurant Name').sum().sort_values('Votes', ascending=True).reset_index().iloc[:10, :]
-        st.dataframe(grf2)
+        fig = votos(df1, True)
+        st.dataframe(fig)
         
 
     with st.container():
@@ -324,15 +368,16 @@ with tab2:
         
         with col1:
             st.subheader('Restaurantes com maior nota média')
-
-            grf3 = df1.loc[:, ['Restaurant Name', 'Aggregate rating']].groupby('Restaurant Name').mean().sort_values('Aggregate rating', ascending=False).reset_index().iloc[:10, :2]
-            st.dataframe(grf3)
+        
+            grf = nota(df1, False)
+            st.dataframe(grf)
+            
             
         with col2:
             st.subheader('Restaurantes com menor nota média')            
             
-            grf4 = df1.loc[:, ['Restaurant Name', 'Aggregate rating']].groupby('Restaurant Name').mean().sort_values('Aggregate rating', ascending=True).reset_index().iloc[:10, :2]
-            st.dataframe(grf4)
+            grf = nota(df1, True)
+            st.dataframe(grf)
             
             
     with st.container():
@@ -341,14 +386,15 @@ with tab2:
         
         with col1:
             st.subheader('Restaurantes mais caros')
-
-            grf = df1.loc[:, ['Restaurant Name', 'price_type', 'Price range']].groupby('Restaurant Name').max().sort_values('Price range', ascending=False).reset_index().iloc[:10, :2]
+            
+            
+            grf = preco(df1, False)
             st.dataframe(grf)
             
         with col2:
             st.subheader('Restaurantes mais baratos')            
             
-            grf = df1.loc[:, ['Restaurant Name', 'price_type', 'Price range']].groupby('Restaurant Name').min().sort_values('Price range', ascending=True).reset_index().iloc[:10, :2]
+            grf = preco(df1, True)
             st.dataframe(grf)
             
             
