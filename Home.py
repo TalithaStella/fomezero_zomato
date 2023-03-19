@@ -9,9 +9,8 @@ import plotly.express as px
 import inflection
 import streamlit as st
 from PIL import Image 
-# import plotly.graph_objects as go
-# import folium
-# from haversine import haversine
+import folium
+from streamlit_folium import folium_static
 
 st.set_page_config( layout='wide')
 
@@ -112,12 +111,12 @@ df1 = clean_code(df)
 
 
 # --------------------------------------------------------
-# Funções de gráfico
+#                   Funções de gráfico
 # --------------------------------------------------------
 
 
 # ===================================================================
-# Slidebar no streamlit - TUDO QUE ESTIVER DENTRO DA BARRA PRECISA TER O .sidebar
+#                   Slidebar no streamlit 
 # =================================================================== 
 
 
@@ -153,7 +152,7 @@ df1 = df1.loc[country_sel, :]
 
 
 # ===================================================================
-# Layout no streamlit  -- Aqui vai no corpo da página
+# Layout no streamlit  
 # ===================================================================
 
 
@@ -185,7 +184,7 @@ with st.container():
     
 
 
-    #Slot de barras:
+
 with st.container():
         col1, col2, col3, col4, col5 = st.columns( 5, gap= 'large') 
         
@@ -216,8 +215,23 @@ with st.container():
         with col5:
             cuis_all = df1.loc[:, 'Cuisines'].nunique()
             col5.metric('Quantidade de culinárias registradas', cuis_all)
-        
 
+            
+            
+with st.container():
+    st.markdown("""---""")   
+    
+        
+    data_mapa = df1.loc[:, ['Restaurant ID', 'Longitude', 'Latitude']].groupby('Restaurant ID').median().reset_index()
+
+    mapa = folium.Map(zoom_start=11)
+
+    for index, location_info in data_mapa.iterrows():
+        folium.Marker( [location_info['Latitude'], 
+                        location_info['Longitude']], 
+                     popup=location_info['Restaurant ID']).add_to( mapa )
+
+    folium_static(mapa, width=800, height=550)
            
        
     
