@@ -107,5 +107,7 @@ O segundo objetivo foi criar um conjunto de gráficos e/ou tabelas que ixibissem
 ## 7 Próximos passos
 
 I. Reduzir o número de métricas
+
 II. Adicionar novas visões de negócio. 
+
 III. Se também tiver índices temporais, adicionar na análise.
