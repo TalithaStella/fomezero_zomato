@@ -167,6 +167,42 @@ def caro_barato(df1, preco):
     return grf_data
 
 
+
+def brasil(df1, asc):
+
+    br = df1.loc[(df1['Cuisines'] == 'Brazilian'),['Restaurant Name', 'Aggregate rating'] ].groupby('Restaurant Name').mean().sort_values('Aggregate rating', ascending=asc).reset_index().iloc[1, 0]
+
+    return br
+
+
+
+def rest_col(df1, col):
+
+    if col == 'indian':
+        culinaria = df1.loc[(df1['Cuisines'] == 'North Indian'),['Restaurant Name', 'Aggregate rating'] ].groupby('Restaurant Name').mean().sort_values('Aggregate rating', ascending=False).reset_index().iloc[1, 0]
+    else:
+        culinaria = df1.loc[(df1['Cuisines'] == 'Mineira'),['Restaurant Name', 'Aggregate rating'] ].groupby('Restaurant Name').mean().sort_values('Aggregate rating', ascending=True).reset_index().iloc[0, 0]
+    return culinaria
+
+
+
+def votos(df1, asc):
+    fig = df1.loc[:, ['Restaurant Name', 'Votes']].groupby('Restaurant Name').sum().sort_values('Votes', ascending=asc).reset_index().iloc[:10, :]
+    return fig
+
+
+
+def nota(df1, asc):
+
+    grf = df1.loc[:, ['Restaurant Name', 'Aggregate rating']].groupby('Restaurant Name').mean().sort_values('Aggregate rating', ascending=asc).reset_index().iloc[:10, :2]
+    return grf
+
+
+def preco(df1, asc):
+
+    grf = df1.loc[:, ['Restaurant Name', 'price_type', 'Price range']].groupby('Restaurant Name').max().sort_values('Price range', ascending=asc).reset_index().iloc[:10, :2]
+    return grf
+
 # ===================================================================
 #                    Slidebar no streamlit  
 # =================================================================== 
@@ -209,55 +245,160 @@ df1 = df1.loc[country_sel, :]
 #                         Layout no streamlit  
 # ===================================================================
 
+tab1, tab2 = st.tabs( ['Visão Culinárias',  'Visão Restaurantes'] )
 
-with st.container():
-    st.sidebar.markdown("""---""") 
-    st.subheader ('Diversidade culinária')
+with tab1:
     
-
-    fig = diverdidade(df1)
-    st.pyplot(fig)
-    
-
-with st.container():
-    st.markdown("""---""") 
-    st.subheader ('Top 10 melhores cozinhas')
-    
-
-    fig = melhor_pior(df1, False)
-    st.plotly_chart(fig, use_container_width=True)
-    st.markdown("""---""") 
+    with st.container():
+        st.sidebar.markdown("""---""") 
+        st.subheader ('Diversidade culinária')
 
 
-with st.container():
-    st.subheader ('Top 10 piores cozinhas ')
-
-    fig = melhor_pior(df1, True)
-    st.plotly_chart(fig, use_container_width=True)
+        fig = diverdidade(df1)
+        st.pyplot(fig)
 
 
+    with st.container():
+        st.markdown("""---""") 
+        col1, col2  = st.columns(2)
+
+        with col1:
+
+            st.subheader ('Top 10 melhores cozinhas')
 
 
-with st.container():
+            fig = melhor_pior(df1, False)
+            st.plotly_chart(fig, use_container_width=True)
+
+
+
+        with col2:
+            st.subheader ('Top 10 piores cozinhas ')
+
+            fig = melhor_pior(df1, True)
+            st.plotly_chart(fig, use_container_width=True)
+
+
+
+
+    with st.container():
+
+        col1, col2 = st.columns(2)
+
+        with col1:
+            st.subheader('Top 10 culinárias mais caras e pior avaliada')
+            st.markdown("###### Para pratos 'Expensive' ou 'Gourmet' e média avaliação < 2.5")      
+
+
+            grf_data = caro_barato(df1, 'caro')
+            st.dataframe(grf_data)
+
+        with col2:
+            st.subheader('Top 10 culinárias mais baratas e melhor avaliada')
+            st.markdown("###### Para pratos 'Normal' ou 'Cheap' e média avaliação > 4.5")
+
+
+            grf_data = caro_barato(df1, 'barato')
+            st.dataframe(grf_data)
+            
+            
+            
+with tab2:
+
 
     col1, col2 = st.columns(2)
 
     with col1:
-        st.subheader('Top 10 culinárias mais caras e pior avaliada')
-        st.markdown("###### Para pratos 'Expensive' ou 'Gourmet' e média avaliação < 2.5")      
+        st.markdown ('##### Melhor restaurante Brasileiro ')
+        
+        br = brasil(df1, False)
+        col1.metric( '', br )
 
-            
-        grf_data = caro_barato(df1, 'caro')
-        st.dataframe(grf_data)
 
     with col2:
-        st.subheader('Top 10 culinárias mais baratas e melhor avaliada')
-        st.markdown("###### Para pratos 'Normal' ou 'Cheap' e média avaliação > 4.5")
+        st.markdown ('##### Pior restaurante Brasileiro ')
+        br = brasil(df1, True)
+        col2.metric( '', br )
+
+    st.markdown("""---""")
+
+    
+    col1, col2 = st.columns(2)    
+
+
+    with col1:
+        st.markdown ('##### Restaurante da melhor culinária (north Indian)')
+      
+        culinaria = rest_col(df1, 'indian')
+        col1.metric( '', culinaria)
+        
         
 
-        grf_data = caro_barato(df1, 'barato')
-        st.dataframe(grf_data)
+    with col2:
+        st.markdown ('##### Restaurante da pior culinária (Mineira) ')
+        
+        culinaria = rest_col(df1, 'mineira')
+        col2.metric( '', culinaria)
+        
+        
+    st.markdown("""---""")
+        
+        
+    
+    col1, col2 = st.columns(2)
+    
+    with col1:
+        st.subheader('Restaurantes com mais votos realizados')
+        
+        fig = votos(df1, False)
+        fig = px.bar(fig, x='Restaurant Name', y='Votes')
+        
+        st.plotly_chart(fig, use_container_width=True)
+        
+    with col2:
+        st.subheader('Restaurantes com menos votos realizados')
 
+        fig = votos(df1, True)
+        st.dataframe(fig)
+        
+
+    with st.container():
+        
+        col1, col2 = st.columns(2)
+        
+        with col1:
+            st.subheader('Restaurantes com maior nota média')
+        
+            grf = nota(df1, False)
+            st.dataframe(grf)
+            
+            
+        with col2:
+            st.subheader('Restaurantes com menor nota média')            
+            
+            grf = nota(df1, True)
+            st.dataframe(grf)
+            
+            
+    with st.container():
+        
+        col1, col2 = st.columns(2)
+        
+        with col1:
+            st.subheader('Restaurantes mais caros')
+            
+            
+            grf = preco(df1, False)
+            st.dataframe(grf)
+            
+        with col2:
+            st.subheader('Restaurantes mais baratos')            
+            
+            grf = preco(df1, True)
+            st.dataframe(grf)
+            
+            
+   
 
 
 
