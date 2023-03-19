@@ -130,7 +130,7 @@ def p_maior_media(df1):
 
 def p_culinaria(df1):
     pais_grf4 = df1.loc[:, ['Cuisines', 'country', 'Restaurant ID']].groupby('country').nunique().sort_values('Cuisines', ascending=False).reset_index()
-    fig = px.treemap(pais_grf4, path=['country'], values='Cuisines', color='Cuisines' )
+    fig = px.treemap(pais_grf4, path=['country'], values='Cuisines', color='Cuisines' , color_continuous_scale='RdBu' )
 
     return fig
 
@@ -160,14 +160,20 @@ def p_rest_caros(df1):
 
 
 def p_entrega(df1):
-    pais_grf6 = df1.loc[:, ['country', 'delivering_now']].groupby('delivering_now').nunique().sort_values('delivering_now', ascending=False).reset_index()
+    pais_grf6 = df1.loc[:, ['country', 'delivering_now']].groupby('delivering_now').count().sort_values('delivering_now', ascending=False).reset_index()
     fig = px.pie(pais_grf6, values='country', names='delivering_now')
 
     return fig
 
 def p_reservas(df1):
-    pais_grf7 = df1.loc[:, ['country', 'table_booking']].groupby('table_booking').nunique().sort_values('table_booking', ascending=False).reset_index()
+    pais_grf7 = df1.loc[:, ['country', 'table_booking']].groupby('table_booking').count().sort_values('table_booking', ascending=False).reset_index()
     fig = px.pie(pais_grf7, values='country', names='table_booking')
+
+    return fig
+
+def p_online(df1):
+    pais_grf6 = df1.loc[:, ['country', 'online_delivery']].groupby('online_delivery').count().sort_values('online_delivery', ascending=False).reset_index()
+    fig = px.pie(pais_grf6, values='country', names='online_delivery')
 
     return fig
 
@@ -275,7 +281,7 @@ with tab2:
 
         
     with st.container():
-        col1, col2 = st.columns(2)
+        col1, col2, col3 = st.columns(3)
         
         
         with col1:
@@ -286,11 +292,16 @@ with tab2:
 
 
         with col2:
+            st.subheader('Relação de pedidos online ')
+
+            fig = p_online(df1)
+            st.plotly_chart(fig, use_container_width=True)
+
+        with col3:
             st.subheader('Relação de reservas ')
 
             fig = p_reservas(df1)
             st.plotly_chart(fig, use_container_width=True)
-
     
     
     
