@@ -1,4 +1,5 @@
 link: https://talithastella-fomezero-zomato.streamlit.app/
+<hr>
 
 ## 1 Problema de negócio
 
