@@ -114,7 +114,19 @@ df1 = clean_code(df)
 #                   Funções de gráfico
 # --------------------------------------------------------
 
+def rest_mapa(df1):
+    
+    data_mapa = df1.loc[:, ['Restaurant ID', 'Longitude', 'Latitude']].groupby('Restaurant ID').median().reset_index()
 
+    mapa = folium.Map(zoom_start=11)
+
+    for index, location_info in data_mapa.iterrows():
+        folium.Marker( [location_info['Latitude'], 
+                        location_info['Longitude']], 
+                     popup=location_info['Restaurant ID']).add_to( mapa )
+
+    folium_static(mapa, width=800, height=550)
+    
 # ===================================================================
 #                   Slidebar no streamlit 
 # =================================================================== 
@@ -210,7 +222,7 @@ with st.container():
         with col4:
 
             score = df1.loc[:, 'Votes'].sum()
-            col4.metric('Total avaliações feitas', score )  # ARRUMAR ESSA FORMATAÇÃO
+            col4.metric('Total avaliações feitas', score ) 
         
         with col5:
             cuis_all = df1.loc[:, 'Cuisines'].nunique()
@@ -219,19 +231,11 @@ with st.container():
             
             
 with st.container():
-    st.markdown("""---""")   
+    st.markdown("""---""") 
     
-        
-    data_mapa = df1.loc[:, ['Restaurant ID', 'Longitude', 'Latitude']].groupby('Restaurant ID').median().reset_index()
+    st.subheader('Mapa dos restaurantes')
+    mapa=rest_mapa(df1)
 
-    mapa = folium.Map(zoom_start=11)
-
-    for index, location_info in data_mapa.iterrows():
-        folium.Marker( [location_info['Latitude'], 
-                        location_info['Longitude']], 
-                     popup=location_info['Restaurant ID']).add_to( mapa )
-
-    folium_static(mapa, width=800, height=550)
            
        
     
