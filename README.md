@@ -1,3 +1,5 @@
+link: https://talithastella-fomezero-zomato.streamlit.app/
+
 ## 1 Problema de negócio
 
 Trata de uma empresa fictícia com o intúito de aplicar os conhecimentos adquiridos durante o curso de Python da ComunidadeDS. Aqui assumimos que um Marktplace de restaurantes me contratou como Cientista de Dados e minha primeira tarefa é ajudar o CEO a identificar pontos chaves da empresa, respondendo às perguntas que ele fizer utilizando dados afim de ajudar na tomada de melhores decisões estratégicas e alavancar ainda mais a FomeZero. Para isso é preciso que seja feita uma análise nos dados da empresa e que sejam gerados dashboards.
