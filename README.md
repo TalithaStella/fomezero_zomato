@@ -1,4 +1,6 @@
 link: https://talithastella-fomezero-zomato.streamlit.app/
+
+Este é um projeto pessoal feito inteiramente por mim afim de aplicar os conhecimentos de Python adquiridos no curso da ComunidadeDS.
 <hr>
 
 ## 1 Problema de negócio
