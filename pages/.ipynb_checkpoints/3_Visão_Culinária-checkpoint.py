@@ -118,9 +118,9 @@ df1 = clean_code(df)
 def diverdidade(df1):
     pais_grf4 = df1.loc[:, ['Cuisines', 'country', 'Restaurant ID']].groupby('country').nunique().sort_values('Cuisines', ascending=False).reset_index()
 
-    fig= px.bar(pais_grf4.head(10), x='country', y='Cuisines')
+    fig = px.bar(pais_grf4.head(10), x='country', y='Cuisines')
     
-    #Creating the text variable
+    # Creating the text variable
     text = " ".join(cat for cat in df1.Cuisines)
 
     # Generate word cloud
@@ -128,14 +128,13 @@ def diverdidade(df1):
         width=650,
         height=200,
         random_state=1,
-
         collocations=False,
         stopwords=STOPWORDS,
-    ).generate(text)
-
-    plt.imshow(word_cloud)
+        font_path='/TrueType/Calibri.TTF').generate(text)
+    
+    plt.imshow(word_cloud, interpolation='bilinear')
     plt.axis("off")
-    fig = plt.show()
+    plt.show()
     st.set_option('deprecation.showPyplotGlobalUse', False)
     
     return fig
@@ -397,33 +396,4 @@ with tab2:
             grf = preco(df1, True)
             st.dataframe(grf)
             
-            
-   
-
-
-
-
-        
-        
-
-
-    
-    
-    
-    
-
-
-
-            
-        
-        
-    
-        
-        
-
-    
-
-
-
-
-
+  
