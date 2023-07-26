@@ -12,4 +12,4 @@ seaborn==0.11.2
 wordcloud==1.9.2
 stopwords==1.0.0
 streamlit==1.23.1
-pillow=9.0.1
+pillow==9.0.1
