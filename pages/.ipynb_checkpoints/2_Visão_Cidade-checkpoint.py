@@ -70,7 +70,6 @@ def create_yes_no(yes_no):
         return 'No'
 
 
-# Renomear as colunas do DF
 def rename_columns(dataframe):
     df = dataframe.copy()
     title = lambda x: inflection.titleize(x)
@@ -81,6 +80,8 @@ def rename_columns(dataframe):
     cols_old = list(map(spaces, cols_old))
     cols_new = list(map(snakecase, cols_old))
     df.columns = cols_new
+    
+    return df
 
 def color_name(color_code):
     return colors[color_code]
@@ -96,13 +97,14 @@ def clean_code(data):
     
     df = df.dropna()
   
-    df["country"] = df.loc[:, "Country Code"].apply(lambda x: country_name(x))
-    df["color_name"] = df.loc[:, "Rating color"].apply(lambda x: color_name(x))
-    df["Cuisines"] = df.loc[:, "Cuisines"].apply(lambda x: x.split(",")[0])
-    df["price_type"] = df.loc[:, "Price range"].apply(lambda x: create_price_tye(x))
-    df["delivering_now"] = df.loc[:, "Is delivering now"].apply(lambda x: create_yes_no(x))
-    df["table_booking"] = df.loc[:, "Has Table booking"].apply(lambda x: create_yes_no(x))
-    df["online_delivery"] = df.loc[:, "Has Online delivery"].apply(lambda x: create_yes_no(x))
+    # Utilizando .loc para atribuir os valores diretamente no DataFrame original
+    df.loc[:, "country"] = df.loc[:, "Country Code"].apply(lambda x: country_name(x))
+    df.loc[:, "color_name"] = df.loc[:, "Rating color"].apply(lambda x: color_name(x))
+    df.loc[:, "Cuisines"] = df.loc[:, "Cuisines"].apply(lambda x: x.split(",")[0])
+    df.loc[:, "price_type"] = df.loc[:, "Price range"].apply(lambda x: create_price_tye(x))
+    df.loc[:, "delivering_now"] = df.loc[:, "Is delivering now"].apply(lambda x: create_yes_no(x))
+    df.loc[:, "table_booking"] = df.loc[:, "Has Table booking"].apply(lambda x: create_yes_no(x))
+    df.loc[:, "online_delivery"] = df.loc[:, "Has Online delivery"].apply(lambda x: create_yes_no(x))
     
     return df
 
@@ -115,7 +117,7 @@ df1 = clean_code(df)
 # --------------------------------------------------------
 
 def c_avaliacao(df1):
-    cid_grf1 = round(df1.loc[:, ['City', 'Aggregate rating', 'country']].groupby('City').mean().sort_values('Aggregate rating', ascending=False).reset_index(), 1)
+    cid_grf1 = round(df1.loc[:, ['City', 'Aggregate rating', 'country']].groupby('City').mean(numeric_only=True).sort_values('Aggregate rating', ascending=False).reset_index(), 1)
     fig = px.funnel(cid_grf1.head(10), y='City', x='Aggregate rating', color='City')
     fig.update(layout_showlegend=False)
 

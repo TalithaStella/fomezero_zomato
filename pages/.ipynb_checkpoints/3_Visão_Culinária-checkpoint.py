@@ -11,6 +11,7 @@ import matplotlib.pyplot as plt
 from wordcloud import WordCloud, STOPWORDS
 import streamlit as st
 from PIL import Image 
+import plotly.graph_objects as go
 
 
 st.set_page_config(  layout='wide')
@@ -129,15 +130,10 @@ def diverdidade(df1):
         height=200,
         random_state=1,
         collocations=False,
-        stopwords=STOPWORDS,
-        font_path='/TrueType/Calibri.TTF').generate(text)
+        stopwords=STOPWORDS).generate(text)
     
-    plt.imshow(word_cloud, interpolation='bilinear')
-    plt.axis("off")
-    plt.show()
-    st.set_option('deprecation.showPyplotGlobalUse', False)
-    
-    return fig
+    st.plotly_chart(fig, use_container_width=True)  
+    st.image(word_cloud.to_array(), use_column_width=True)
 
 
 def melhor_pior(df1, asc):
@@ -251,8 +247,7 @@ with tab1:
     with st.container():
         st.sidebar.markdown("""---""") 
         st.subheader ('Diversidade culinária')
-
-
+        
         fig = diverdidade(df1)
         st.pyplot(fig)
 
